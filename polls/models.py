@@ -15,7 +15,7 @@ class Survey(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
     name = models.CharField(max_length=300)
     start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(defualt=timezone.now)
+    end_date = models.DateField(default=timezone.now)
     data = JSONField()
 
 

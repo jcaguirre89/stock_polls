@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta name="description" content="Piwi se la come">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/png" href="{% static 'stock_polls/favicon.ico' %}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Fira+Sans|Abril+Fatface|Roboto+Slab|Lora:700" rel="stylesheet">
+
+    {% load static %}
+
+    {# Load tag library, CSS and JS from bootstrap #}
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <link rel=stylesheet type="text/css" href="{% static 'stock_polls/site_style.css' %}"/>
+    <script src="{% static 'stock_polls/site_javascript.js' %}"></script>
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+
+</head>
+<body>
+
+<div class='outer-wrapper'>
+    {% block leftnav %}
+    {%endblock leftnav %}
+
+
+
+    <div class='content-wrapper'>
+    {% block content %}
+
+    {% endblock content %}
+    </div>
+
+</div>
+
+{% block javascript %}
+{% endblock javascript %}
+
+</body>
+
+</html>
