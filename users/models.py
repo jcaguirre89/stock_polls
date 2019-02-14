@@ -62,20 +62,25 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
 class Profile(models.Model):
     """
     User input data
     DEMOGRAPHICS
     """
+    RESPONDENT = 'respondent'
+    SURVEYOR = 'surveyor'
 
-    is_surveyor = models.BooleanField(default=False)
-    is_admin= models.BooleanField(default=False)
-    is_respondent = models.BooleanField(default=False)
+    USER_TYPES = (
+        (SURVEYOR, 'Surveyor'),
+        (RESPONDENT, 'Respondent'),
+    )
+
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, default=RESPONDENT)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Profile for {self.user.email}'
-
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
