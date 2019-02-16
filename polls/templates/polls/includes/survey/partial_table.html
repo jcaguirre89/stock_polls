@@ -1,0 +1,39 @@
+{% for object in object_list %}
+<tr>
+    <td>{{ object.name }}</td>
+    <td>{{ object.date_created }}</td>
+    <td>{{ object.start_date }}</td>
+    <td>{{ object.end_date }}</td>
+    <td>{{ object.n_stocks }}</td>
+    <td>{{ object.n_responses_opened }}</td>
+    <td>{{ object.n_responses_completed }}</td>
+    <td></td>
+    <td>
+      <a class="btn btn-success btn-sm"
+         href="{% url 'polls:respond_survey' object.pk %}">
+         Respond
+      </a>
+    </td>
+    <td>
+      <button type="button"
+              class="btn btn-warning btn-sm"
+              id="js-update"
+              data-url="{% url object.update_url object.pk %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+    </td>
+    <td>
+      <button type="button"
+              class="btn btn-danger btn-sm"
+              id="js-delete"
+              data-url="{% url object.delete_url object.pk %}">
+        <span class="glyphicon glyphicon-trash"></span> Delete
+      </button>
+    </td>
+</tr>
+{% empty %}
+    <tr>
+        <td colspan="7" class="text-center bg-warning">No data</td>
+    </tr>
+
+{% endfor %}

@@ -1,0 +1,20 @@
+{% extends "stock_polls/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel=stylesheet type="text/css" href="{% static 'polls/style.css' %}"/>
+
+{% endblock extra_head %}
+
+
+{% block content %}
+
+
+<div class="inner-wrapper">
+
+    <h2>Thank you for completing a survey</h2>
+    <h3><a href="{% url 'polls:survey_list' %}">Go back</a></h3>
+
+</div>
+
+{% endblock content %}

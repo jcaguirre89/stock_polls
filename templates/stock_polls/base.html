@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -11,15 +12,12 @@
 
     <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Fira+Sans|Abril+Fatface|Roboto+Slab|Lora:700" rel="stylesheet">
 
-    {% load static %}
+
 
     {# Load tag library, CSS and JS from bootstrap #}
     {% load bootstrap3 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-
-    <link rel=stylesheet type="text/css" href="{% static 'stock_polls/site_style.css' %}"/>
-    <script src="{% static 'stock_polls/site_javascript.js' %}"></script>
 
     {% block extra_head %}
     {% endblock extra_head %}

@@ -1,0 +1,33 @@
+{% extends 'stock_polls/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="'inner-wrapper">
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+        <div class="form-group{% if field.errors %} has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% render_field field class="form-control" %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% for error in field.errors %}
+                  <p class="help-block">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <button class="btn btn-md btn-success" type="submit">Submit</button>
+    </form>
+</div>
+
+{% endblock content %}
