@@ -1,11 +1,13 @@
 
 
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, UpdateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import reverse, redirect, render
 from django.contrib.auth import login, authenticate
+from django.urls import reverse_lazy
 
-from users.forms import SignUpForm
+
+from users.forms import SignUpForm, ProfileForm
 
 from users.models import User, Profile
 
@@ -14,6 +16,7 @@ from users.models import User, Profile
 class SignUp(FormView):
     template_name = 'registration/signup.html'
     form_class = SignUpForm
+    success_url = reverse_lazy('polls:survey_list')
 
     def form_valid(self, form):
         """ Save and redirect to corresponding site """
@@ -22,12 +25,13 @@ class SignUp(FormView):
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(email=user.email, password=raw_password)
         login(self.request, user)
-
-        if form.cleaned_data['user_type'] == Profile.SURVEYOR:
-            return HttpResponseRedirect(reverse('polls:survey_list'))
-        else:
-            return HttpResponseRedirect(reverse('polls:choose_survey'))
+        return super().form_valid(form)
 
 class Index(TemplateView):
     template_name = 'users/index.html'
+
+class UpdateProfile(FormView):
+    form_class = ProfileForm
+    template_name = 'users/update_profile.html'
+    success_url = reverse_lazy('polls:survey_list')
 

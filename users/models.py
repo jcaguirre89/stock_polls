@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+
 # Override User model
 class CustomUserManager(BaseUserManager):
     """
@@ -31,6 +32,15 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
+
+    RESPONDENT = 'respondent'
+    SURVEYOR = 'surveyor'
+
+    USER_TYPES = (
+        (SURVEYOR, 'Surveyor'),
+        (RESPONDENT, 'Respondent'),
+    )
+
     email = models.EmailField(unique=True, null=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
@@ -46,7 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Designates whether this user should be treated as active. ''Unselect this instead of deleting accounts.'
         ),
     )
-
     objects = CustomUserManager()
 
     class Meta:
@@ -68,19 +77,28 @@ class Profile(models.Model):
     User input data
     DEMOGRAPHICS
     """
-    RESPONDENT = 'respondent'
-    SURVEYOR = 'surveyor'
+    PA = 'pa'
+    NY = 'ny'
+    MY = 'my'
+    VA = 'va'
 
-    USER_TYPES = (
-        (SURVEYOR, 'Surveyor'),
-        (RESPONDENT, 'Respondent'),
+    STATES = (
+        (PA, 'Pennsylvania'),
+        (NY, 'New York'),
+        (MY, 'Maryland'),
+        (VA, 'Virginia'),
     )
 
-    user_type = models.CharField(max_length=20, choices=USER_TYPES, default=RESPONDENT)
+    company = models.CharField(max_length=300, blank=True)
+    address = models.CharField(max_length=500, blank=True)
+    state = models.CharField(max_length=2, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Profile for {self.user.email}'
+
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
