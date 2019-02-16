@@ -122,7 +122,7 @@ USE_TZ = True
 
 
 LOGIN_REDIRECT_URL = 'users:home'
-LOGOUT_REDIRECT_URL = 'start'
+LOGOUT_REDIRECT_URL = 'index'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

@@ -6,7 +6,10 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.base import ContextMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+
 
 from polls.models import Survey, Response
 from users.models import User, Profile
@@ -35,7 +38,7 @@ class IncludeModelCreateUrlMixin:
         return context
 
 
-class BaseListCustom(IncludeModelCreateUrlMixin, ListView):
+class BaseListCustom(LoginRequiredMixin, IncludeModelCreateUrlMixin, ListView):
     """ Base View Class to list objects with FK to User model"""
 
     @property
@@ -75,7 +78,7 @@ class JsonResponseMixin:
         return JsonResponse(data)
 
 
-class BaseCreateCustom(IncludeModelCreateUrlMixin, JsonResponseMixin, BaseCreateView):
+class BaseCreateCustom(LoginRequiredMixin, IncludeModelCreateUrlMixin, JsonResponseMixin, BaseCreateView):
     """ Base Class to create objects that have a FK to the User model"""
     form_template = 'polls/includes/partial_create.html'
 
@@ -99,7 +102,7 @@ class BaseCreateCustom(IncludeModelCreateUrlMixin, JsonResponseMixin, BaseCreate
         return JsonResponse(data)
 
 
-class BaseUpdateCustom(JsonResponseMixin, BaseUpdateView):
+class BaseUpdateCustom(LoginRequiredMixin, JsonResponseMixin, BaseUpdateView):
     """ Base Class to update objects that have a FK to the User model"""
     form_template = 'polls/includes/partial_update.html'
 
@@ -123,7 +126,7 @@ class BaseUpdateCustom(JsonResponseMixin, BaseUpdateView):
         return JsonResponse(data)
 
 
-class BaseDeleteCustom(JsonResponseMixin, SingleObjectMixin, ContextMixin, View):
+class BaseDeleteCustom(LoginRequiredMixin, JsonResponseMixin, SingleObjectMixin, ContextMixin, View):
     """ Base class to delete objects with FK to User model """
     form_template = 'polls/includes/partial_delete.html'
 
@@ -145,9 +148,15 @@ class BaseDeleteCustom(JsonResponseMixin, SingleObjectMixin, ContextMixin, View)
         return JsonResponse(data)
 
 class ListSurvey(BaseListCustom):
+    """ For surveyors """
     model = Survey
     template_name = 'polls/survey_list.html'
 
+
+class ChooseSurvey(LoginRequiredMixin, ListView):
+    """ For respondents """
+    model = Survey
+    template_name = 'polls/choose_survey.html'
 
 class CreateSurvey(BaseCreateCustom):
     model = Survey
@@ -164,6 +173,7 @@ class DeleteSurvey(BaseDeleteCustom):
     form_class = SurveyForm
 
 
+@login_required
 def respond_survey(request, survey_id):
     survey = get_object_or_404(Survey, id=survey_id)
     response = Response.objects.create(user=request.user, survey=survey)
@@ -179,6 +189,7 @@ def respond_survey(request, survey_id):
     context = {'form': form, 'survey': survey}
     return render(request, 'polls/respond_survey.html', context)
 
+@login_required
 def thankyou(request, survey_id):
     return render(request, 'polls/thankyou.html')
 

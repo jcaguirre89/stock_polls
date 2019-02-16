@@ -1,0 +1,64 @@
+{% extends "stock_polls/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel=stylesheet type="text/css" href="{% static 'polls/style.css' %}"/>
+
+{% endblock extra_head %}
+
+
+{% block content %}
+
+
+<div class="inner-wrapper">
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date Created</th>
+                <th>Start date</th>
+                <th>End date</th>
+                <th>Number of stocks</th>
+                <th>Responses created</th>
+                <th>Responses completed</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td>{{ object.name }}</td>
+                <td>{{ object.date_created }}</td>
+                <td>{{ object.start_date }}</td>
+                <td>{{ object.end_date }}</td>
+                <td>{{ object.n_stocks }}</td>
+                <td>{{ object.n_responses_opened }}</td>
+                <td>{{ object.n_responses_completed }}</td>
+                <td></td>
+                <td>
+                  <a class="btn btn-success btn-sm"
+                     href="{% url 'polls:respond_survey' object.pk %}">
+                     Respond
+                  </a>
+                </td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center bg-warning">No data</td>
+                </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script src="{% static 'polls/polls.js' %}"></script>
+
+
+
+{% endblock javascript %}

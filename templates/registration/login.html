@@ -1,0 +1,42 @@
+{% extends "stock_polls/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+{% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+  {% else %}
+    <p>Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+
+{% for field in form %}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% render_field field class="form-control" %}
+        <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% for error in field.errors %}
+              <p class="help-block">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+
+{% endfor %}
+
+    <input type="hidden" name="next" value="{{ next }}" />
+    <button class="btn btn-lg bt-success" type="submit">Log in</button>
+</form>
+
+{# Assumes you setup the password_reset view in your URLconf #}
+<p><a href="#">Lost password?</a></p>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'stock_polls/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<a href="{% url 'login' %}">Login</a>
+<a href="{% url 'users:signup' %}">Sign up</a>
+
+{% endblock content %}
