@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+    <title>Survey app</title>
     <meta name="description" content="Piwi se la come">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/png" href="{% static 'stock_polls/favicon.ico' %}"/>
@@ -11,6 +12,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Fira+Sans|Abril+Fatface|Roboto+Slab|Lora:700" rel="stylesheet">
+    
+    <link rel=stylesheet type="text/css" href="{% static 'stock_polls/site_style.css' %}"/>
+
 
 
 
@@ -26,17 +30,49 @@
 <body>
 
 <div class='outer-wrapper'>
-    {% block leftnav %}
-    {%endblock leftnav %}
 
+    <header>
+    {% block header %}
+    {%  endblock header %}    
+    </header>
+    
+    <nav>
+    {% block sidenav %}
+        {% if user %}
+            <div class="sidenav-outer">
+                <div class="sidenav-item">
+                    <a href="{{ user.get_absolute_url }}">Profile</a>
+                </div>
 
+                <div class="sidenav-item">
+                    <a href="{% url 'polls:survey_list' %}">Create Survey</a>
+                </div>
 
-    <div class='content-wrapper'>
+                <div class="sidenav-item">
+                    <a href="{% url 'polls:choose_survey' %}">Respond Survey</a>
+                </div>
+
+            </div>
+        {% endif %}
+
+    {% endblock sidenav %}
+    </nav>
+
+    <main>
     {% block content %}
-
     {% endblock content %}
-    </div>
-
+    </main>
+    
+    <aside>
+    {% block aside %}
+    {% endblock aside %}
+    </aside>
+    
+    <footer>
+    {% block footer %}
+    {% endblock footer %}
+    </footer>
+    
 </div>
 
 {% block javascript %}

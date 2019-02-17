@@ -1,17 +1,21 @@
 
 
-from django.views.generic import FormView, TemplateView, UpdateView
+from django.views.generic import FormView, TemplateView, DetailView
 from django.http import HttpResponseRedirect
 from django.shortcuts import reverse, redirect, render
 from django.contrib.auth import login, authenticate
 from django.urls import reverse_lazy
-
+from django.forms.models import model_to_dict
 
 from users.forms import SignUpForm, ProfileForm
 
 from users.models import User, Profile
 
 # Create your views here.
+
+class UserHome(TemplateView):
+    template_name = 'users/home.html'
+
 
 class SignUp(FormView):
     template_name = 'registration/signup.html'
@@ -34,4 +38,21 @@ class UpdateProfile(FormView):
     form_class = ProfileForm
     template_name = 'users/update_profile.html'
     success_url = reverse_lazy('polls:survey_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.request.user.profile
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_initial(self):
+        print(model_to_dict(self.request.user.profile))
+        initial = super().get_initial()
+        if self.request.user.is_authenticated:
+            initial.update(model_to_dict(self.request.user.profile))
+        return initial
+
 

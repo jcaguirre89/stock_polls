@@ -1,0 +1,30 @@
+{% extends 'stock_polls/base.html' %}
+{% load static %}
+
+{% block sidenav %}
+    {% if user %}
+        <div class="sidenav-outer">
+            <div class="sidenav-item">
+                <a href="{{ user.get_absolute_url }}">Profile</a>
+            </div>
+
+            <div class="sidenav-item">
+                <a href="{% url 'polls:survey_list' %}">Create Survey</a>
+            </div>
+
+            <div class="sidenav-item">
+                <a href="{% url 'polls:choose_survey' %}">Respond Survey</a>
+            </div>
+
+        </div>
+    {% endif %}
+
+{% endblock sidenav %}
+
+
+{% block content %}
+<h1>Home</h1>
+<h2>{{ user.email }}</h2>
+
+{% endblock content %}
+

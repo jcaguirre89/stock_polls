@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import reverse
 
 
 # Override User model
@@ -70,6 +71,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    def get_absolute_url(self):
+        return reverse('users:update_profile')
 
 
 class Profile(models.Model):
