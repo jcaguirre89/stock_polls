@@ -112,9 +112,18 @@ class Response(models.Model):
     def __str__(self):
         return f'Response for {self.survey.name}'
 
+    def get_absolute_url(self):
+        return reverse('polls:response_detail', kwargs={'pk': self.id})
+
     @property
     def is_open(self):
         if self.data is None:
+            return True
+        return False
+
+    @property
+    def is_complete(self):
+        if self.data is not None:
             return True
         return False
 

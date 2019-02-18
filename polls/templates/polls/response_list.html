@@ -1,0 +1,45 @@
+{% extends "stock_polls/base.html" %}
+{% load static %}
+{% load mytags %}
+
+{% block extra_head %}
+
+{% endblock extra_head %}
+
+
+{% block content %}
+
+
+<div class="inner-wrapper">
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Respondent</th>
+                <th>Date responded</th>
+                <th>Status</th>
+                <th>See response</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for response in object_list %}
+            <tr>
+                <td>{{ response.user.email }}</td>
+                <td>{{ response.date_responded }}</td>
+                <td>{{ response.is_complete|iconbool }}</td>
+                <td><a href="{{ response.get_absolute_url }}">Results</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script src="{% static 'polls/polls.js' %}"></script>
+
+
+
+{% endblock javascript %}

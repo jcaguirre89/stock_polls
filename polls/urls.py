@@ -12,4 +12,9 @@ urlpatterns = [
     path('survey/choose-survey/', views.ChooseSurvey.as_view(), name='choose_survey'),
     path('survey/<int:survey_id>/respond/', views.respond_survey, name='respond_survey'),
     path('survey/<int:survey_id>/thankyou/', views.thankyou, name='thankyou'),
-    ]
+
+    # Responses
+    path('survey/<int:survey_id>/responses/', views.ResponseList.as_view(), name='response_list'),
+    path('survey/<int:pk>/response-detail/', views.ResponseDetail.as_view(), name='response_detail'),
+
+]

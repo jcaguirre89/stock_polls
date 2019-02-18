@@ -193,3 +193,16 @@ def respond_survey(request, survey_id):
 def thankyou(request, survey_id):
     return render(request, 'polls/thankyou.html')
 
+
+class ResponseList(LoginRequiredMixin, ListView):
+    """ List responses to a survey"""
+    model = Response
+    template_name = 'response_list.html'
+
+    def get_queryset(self):
+        survey_id = self.kwargs['survey_id']
+        self.survey = Survey.objects.get(pk=survey_id)
+        return self.survey.responses.all()
+
+class ResponseDetail(DetailView):
+    model = Response

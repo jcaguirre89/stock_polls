@@ -1,0 +1,38 @@
+{% extends "stock_polls/base.html" %}
+{% load static %}
+{% load mytags %}
+
+{% block extra_head %}
+
+{% endblock extra_head %}
+
+
+{% block content %}
+
+
+<div class="inner-wrapper">
+
+    <h2>Respondent: {{object.user.username }}</h2>
+    <h2>Company: {{object.user.profile.company}}</h2>
+    <h2>Date responded: {{object.date_responded }}</h2>
+    <h2>Completed: {{ object.is_complete|iconbool }}</h2>
+
+    <ul>
+        {% for product, price in object.clean_data.items %}
+            <li>{{ product.name }}: {{ price }}</li>
+        {% empty %}
+        <li>No data</li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script src="{% static 'polls/polls.js' %}"></script>
+
+
+
+{% endblock javascript %}
