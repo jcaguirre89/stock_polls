@@ -48,11 +48,5 @@ class UpdateProfile(FormView):
         form.save()
         return super().form_valid(form)
 
-    def get_initial(self):
-        print(model_to_dict(self.request.user.profile))
-        initial = super().get_initial()
-        if self.request.user.is_authenticated:
-            initial.update(model_to_dict(self.request.user.profile))
-        return initial
 
 

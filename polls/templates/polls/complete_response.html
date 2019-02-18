@@ -11,7 +11,7 @@
                 <th>Survey name</th>
                 <th>Date created</th>
                 <th>Date it ends</th>
-                <th>Number of stocks</th>
+                <th>Number of products</th>
                 <th>Number of respondents</th>
                 <th>Creator</th>
             </tr>
@@ -22,7 +22,7 @@
                     <td><a href="{% url 'polls:respond_survey' survey.id %}">{{ survey.name }}</a></td>
                     <td>{{ survey.start_date }}</td>
                     <td>{{ survey.end_date }}</td>
-                    <td>{{ survey.n_stocks }}</td>
+                    <td>{{ survey.n_products }}</td>
                     <td>{{ survey.n_respondents }}</td>
                     <td>{{ survey.user.email }}</td>
                 </tr>

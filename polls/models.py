@@ -4,19 +4,29 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.fields import JSONField
 from django.shortcuts import reverse
+import numpy as np
 
-from users.models import User
 
 
-class Stock(models.Model):
-    ticker = models.CharField(max_length=10, primary_key=True)
-    name = models.CharField(max_length=300)
+
+class Product(models.Model):
+    """ Products are uniquely named for each user that created them """
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='products')
+
+    class Meta:
+        unique_together = ('user', 'name')
 
     def __str__(self):
-        return self.ticker
+        return self.slug
+
+    @property
+    def slug(self):
+        return '-'.join(self.name.strip().lower().split())
+
 
 class Survey(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='surveys')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='surveys')
     date_created = models.DateTimeField(default=timezone.now)
     name = models.CharField(max_length=300)
     start_date = models.DateField(default=timezone.now)
@@ -39,41 +49,46 @@ class Survey(models.Model):
         return 'polls:delete_survey'
 
     @property
-    def stocks(self):
-        """ Stocks in the current survey """
-        tickers = self._stocks_dict2list(self.data)
-        stock_objects = [Stock.objects.get(pk=ticker) for ticker in tickers]
-        return stock_objects
+    def products(self):
+        """ Products in the current survey """
+        as_dict = json.loads(self.data)
+        ids = [item['id'] for item in as_dict]
+        product_objects = [Product.objects.get(pk=product_id) for product_id in ids]
+        return product_objects
 
+    def _product_prices(self, product):
+        """ Return a list of prices of a product in a survey """
+        responses = self.responses.all().completed()
+        prices = [response.response_prices[product] for response in responses]
+        return prices
+
+
+    def avg_price_product(self, product):
+        """ Average price for a product among respondents """
+        if self.n_responses_completed < 1:
+            return
+        return np.mean(self._product_prices(product))
 
     @property
-    def n_stocks(self):
-        """ Number of stocks in survey """
-        return len(self.stocks)
+    def n_products(self):
+        """ Number of products in survey """
+        return len(self.products)
 
     @property
     def n_responses_opened(self):
         """ Number of responses opened """
-        if self.responses:
-            return len(self.responses.all().open())
+        qs = self.responses.all()
+        if qs:
+            return len(qs.open())
         return 0
 
     @property
     def n_responses_completed(self):
         """ Number of responses completed """
-        if self.responses:
-            return len(self.responses.all().completed())
+        qs = self.responses.all()
+        if qs:
+            return len(qs.completed())
         return 0
-
-
-    @staticmethod
-    def _stocks_dict2list(stocks_json):
-        """
-        turns a dictionary of stocks as it comes from the survey's form to a list of Stock objects
-        schema is [{stock: <ticker>}, ..]
-        """
-        as_dict = json.loads(stocks_json)
-        return [item['stock'] for item in as_dict]
 
 
 class ResponseQuerySet(models.QuerySet):
@@ -87,9 +102,10 @@ class ResponseQuerySet(models.QuerySet):
         return [response for response in self.all() if not response.is_open]
 
 class Response(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='respondents')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='respondents')
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name="responses")
     date_responded = models.DateTimeField(default=timezone.now)
+    comment = models.TextField(blank=True)
     data = JSONField(blank=False, null=True)
     objects = ResponseQuerySet.as_manager()
 
@@ -101,3 +117,31 @@ class Response(models.Model):
         if self.data is None:
             return True
         return False
+
+    @property
+    def clean_data(self):
+        """
+        returns products and prices in response as a dict
+        products are Product objects
+        schema comes as {<name>: price, <name>: price, ...}
+        returns {Product: price, Product: price, ...}
+        """
+        if self.is_open:
+            return
+        # data is stored as a json list of dictionaries
+        data = json.loads(self.data)
+        out_data = {
+            Product.objects.get(name=name, user=self.survey.user): price
+            for name, price in data.items()
+            }
+        return out_data
+
+    @property
+    def prices(self):
+        """ Return list of prices in response """
+        return list(self.clean_data.values())
+
+    def bid_price(self, product):
+        """ Return a product's price given by the respondent for a given Product object """
+        return self.clean_data[product]
+
