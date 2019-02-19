@@ -4,14 +4,23 @@ from django import forms
 
 from polls.models import Survey, Response, Product
 
+
 class SurveyForm(forms.ModelForm):
     # Additional fields
-    products = forms.ModelMultipleChoiceField(required=True, queryset=Product.objects.all())
+
 
 
     class Meta:
         model = Survey
         fields = ['name', 'start_date', 'end_date']
+
+    # TODO: give form the user instance in the view
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = kwargs.pop('user', None)
+        self.user = user
+        self.fields['products'] = forms.ModelMultipleChoiceField(required=True,
+                                                                 queryset=self.user.products.all())
 
     def save(self, commit=True):
         # save as json

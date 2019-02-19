@@ -38,7 +38,7 @@
     
     <nav>
     {% block sidenav %}
-        {% if user %}
+        {% if user.is_authenticated %}
             <div class="sidenav-outer">
                 <div class="sidenav-item">
                     <a href="{{ user.get_absolute_url }}">Profile</a>
@@ -50,6 +50,10 @@
 
                 <div class="sidenav-item">
                     <a href="{% url 'polls:choose_survey' %}">Respond Survey</a>
+                </div>
+
+                <div class="sidenav-item">
+                    <a href="{% url 'polls:product_list' %}">Add Products</a>
                 </div>
 
             </div>

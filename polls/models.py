@@ -7,11 +7,10 @@ from django.shortcuts import reverse
 import numpy as np
 
 
-
-
 class Product(models.Model):
     """ Products are uniquely named for each user that created them """
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, help_text='Short name for this product/service')
+    description = models.TextField(blank=True, help_text="Product/service description")
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='products')
 
     class Meta:
@@ -24,6 +23,13 @@ class Product(models.Model):
     def slug(self):
         return '-'.join(self.name.strip().lower().split())
 
+    @property
+    def update_url(self):
+        return 'polls:update_product'
+
+    @property
+    def delete_url(self):
+        return 'polls:delete_product'
 
 class Survey(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='surveys')

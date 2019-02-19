@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
 
-from polls.models import Survey, Response
+from polls.models import Survey, Response, Product
 from users.models import User, Profile
 from polls.forms import SurveyForm, ResponseForm
 
@@ -162,6 +162,9 @@ class CreateSurvey(BaseCreateCustom):
     model = Survey
     form_class = SurveyForm
 
+    def get_form(self, form_class):
+        return form_class(self.request.user, self.request.POST)
+
 
 class UpdateSurvey(BaseUpdateCustom):
     model = Survey
@@ -171,7 +174,6 @@ class UpdateSurvey(BaseUpdateCustom):
 class DeleteSurvey(BaseDeleteCustom):
     model = Survey
     form_class = SurveyForm
-
 
 @login_required
 def respond_survey(request, survey_id):
@@ -206,3 +208,19 @@ class ResponseList(LoginRequiredMixin, ListView):
 
 class ResponseDetail(DetailView):
     model = Response
+
+class ListProduct(BaseListCustom):
+    model = Product
+    template_name = 'product_list.html'
+
+# Product CRUD
+class CreateProduct(BaseCreateCustom):
+    model = Product
+    fields = ('name', 'description')
+
+class UpdateProduct(BaseUpdateCustom):
+    model = Product
+    fields = ('name', 'description')
+
+class DeleteProduct(BaseDeleteCustom):
+    model = Product
