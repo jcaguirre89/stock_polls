@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'stock_polls.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-                    default=config('DB_URL')
+                    default=config('DATABASE_URL')
                     )
     }
 
