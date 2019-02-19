@@ -173,10 +173,15 @@ class UpdateSurvey(BaseUpdateCustom):
     model = Survey
     form_class = SurveyForm
 
+    def get_form_kwargs(self):
+        """ Add user object to form """
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 class DeleteSurvey(BaseDeleteCustom):
     model = Survey
-    form_class = SurveyForm
+
 
 @login_required
 def respond_survey(request, survey_id):

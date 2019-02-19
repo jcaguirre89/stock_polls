@@ -33,7 +33,6 @@
                 <td>{{ object.n_products }}</td>
                 <td>{{ object.n_responses_opened }}</td>
                 <td>{{ object.n_responses_completed }}</td>
-                <td></td>
                 <td>
                   <a class="btn btn-success btn-sm"
                      href="{% url 'polls:respond_survey' object.pk %}">
@@ -43,7 +42,7 @@
             </tr>
             {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center bg-warning">No data</td>
+                    <td colspan="8" class="text-center bg-warning">No data</td>
                 </tr>
 
             {% endfor %}

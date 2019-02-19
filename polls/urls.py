@@ -22,6 +22,6 @@ urlpatterns = [
     path('products/', views.ListProduct.as_view(), name='product_list'),
     path('ajax/create_product/', views.CreateProduct.as_view(), name='create_product'),
     path('ajax/update_product/<int:pk>/', views.UpdateProduct.as_view(), name='update_product'),
-    path('ajax/delete_product/<int:pk>/', views.UpdateProduct.as_view(), name='delete_product'),
+    path('ajax/delete_product/<int:pk>/', views.DeleteProduct.as_view(), name='delete_product'),
 
 ]
