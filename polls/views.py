@@ -162,8 +162,11 @@ class CreateSurvey(BaseCreateCustom):
     model = Survey
     form_class = SurveyForm
 
-    def get_form(self, form_class):
-        return form_class(self.request.user, self.request.POST)
+    def get_form_kwargs(self):
+        """ Add user object to form """
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
 class UpdateSurvey(BaseUpdateCustom):
@@ -199,19 +202,21 @@ def thankyou(request, survey_id):
 class ResponseList(LoginRequiredMixin, ListView):
     """ List responses to a survey"""
     model = Response
-    template_name = 'response_list.html'
+    template_name = 'polls/response_list.html'
 
     def get_queryset(self):
+        """ Only show completed responses """
         survey_id = self.kwargs['survey_id']
         self.survey = Survey.objects.get(pk=survey_id)
-        return self.survey.responses.all()
+        return self.survey.responses.all().completed()
 
 class ResponseDetail(DetailView):
     model = Response
 
+
 class ListProduct(BaseListCustom):
     model = Product
-    template_name = 'product_list.html'
+    template_name = 'polls/product_list.html'
 
 # Product CRUD
 class CreateProduct(BaseCreateCustom):

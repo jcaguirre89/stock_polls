@@ -138,7 +138,7 @@ class Response(models.Model):
         """
         returns products and prices in response as a dict
         products are Product objects
-        schema comes as {<name>: price, <name>: price, ...}
+        schema comes as list of dicts, each one with keys (name, price)
         returns {Product: price, Product: price, ...}
         """
         if self.is_open:
@@ -146,8 +146,8 @@ class Response(models.Model):
         # data is stored as a json list of dictionaries
         data = json.loads(self.data)
         out_data = {
-            Product.objects.get(name=name, user=self.survey.user): price
-            for name, price in data.items()
+            Product.objects.get(name=entry['name'], user=self.survey.user): entry['price']
+            for entry in data
             }
         return out_data
 

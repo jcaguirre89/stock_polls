@@ -8,19 +8,14 @@ from polls.models import Survey, Response, Product
 class SurveyForm(forms.ModelForm):
     # Additional fields
 
-
-
     class Meta:
         model = Survey
         fields = ['name', 'start_date', 'end_date']
 
-    # TODO: give form the user instance in the view
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        user = kwargs.pop('user', None)
-        self.user = user
         self.fields['products'] = forms.ModelMultipleChoiceField(required=True,
-                                                                 queryset=self.user.products.all())
+                                                                 queryset=user.products.all())
 
     def save(self, commit=True):
         # save as json
@@ -40,9 +35,11 @@ class ResponseForm(forms.Form):
         self.instance = instance
         products = self.instance.survey.products
         super().__init__(*args, **kwargs)
-        self.fields['comment'] = forms.CharField(widget=forms.TextInput)
         for product in products:
             self.fields[product.name] = forms.DecimalField(required=False)
+        self.fields['comment'] = forms.CharField(widget=forms.Textarea,
+                                                 required=False,
+                                                 help_text="Leave a comment for the person who created this survey to explain your pricing")
 
 
     def save(self):
