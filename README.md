@@ -3,6 +3,8 @@
 A small django project that allows users to create and complete surveys. A user must create a list of products/services
 that he wants other users to bid on, and then creates a survey.
 
+I made it for a friend as a Proof-of-Concept.
+
 currently served via [a free heroku dyno](https://stock-polls.herokuapp.com) (so be patient with load times on first visit)
 
 To respond a survey, select one from the list and input your price. Optionally leave a comment for the survey creator.
